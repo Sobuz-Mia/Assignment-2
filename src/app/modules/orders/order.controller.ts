@@ -5,7 +5,6 @@ const createAOrder = async (req: Request, res: Response) => {
   try {
     const order = req.body;
     const result = await OrderServices.createAOrderInDB(order);
-    console.log(result, "controllter");
     res.status(200).json({
       success: true,
       message: "Order created successfully!",
@@ -32,7 +31,7 @@ const getAllOrder = async (req: Request, res: Response) => {
         message: "Orders fetched successfully for user email!",
         data: result,
       });
-      return; 
+      return;
     }
     const result = await OrderServices.getAllOrderData();
     res.status(200).json({

@@ -16,7 +16,6 @@ const createAOrderInDB = async (order: Order) => {
     product.inventory.quantity -= order.quantity;
     // update in stock boolean value
     product.inventory.inStock = product.inventory.quantity > 0;
-    console.log(orderData);
   }
   return orderData;
 };
