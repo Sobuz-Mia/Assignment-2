@@ -76,6 +76,7 @@ const updateProduct = async (req: Request, res: Response) => {
       productId,
       product,
     );
+
     res.status(200).json({
       success: true,
       message: "Product updated successfully!",

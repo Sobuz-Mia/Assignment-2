@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { OrderServices } from "./order.services";
+import { z } from "zod";
 // create a order
 const createAOrder = async (req: Request, res: Response) => {
   try {
@@ -11,11 +12,22 @@ const createAOrder = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof z.ZodError) {
       res.status(400).json({
         success: false,
-        message: error.message,
+        message: "Validation Error",
+        errors: error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
       });
+    } else {
+      if (error instanceof Error) {
+        res.status(400).json({
+          success: false,
+          message: error.message,
+        });
+      }
     }
   }
 };

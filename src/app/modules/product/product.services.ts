@@ -24,8 +24,9 @@ const getSingleProduct = async (productId: string) => {
 
 // this is an product update functions here
 const updateSingleProduct = async (productId: string, product: Product) => {
+  const productValidate = ProductValidationSchema.parse(product);
   const updateQuery = {
-    $set: product,
+    $set: productValidate,
   };
   const result = await ProductModel.findOneAndUpdate(
     { _id: productId },

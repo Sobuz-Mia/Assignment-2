@@ -1,22 +1,32 @@
 import { ProductModel } from "../product/product.model";
 import { Order } from "./order.interface";
 import { OrderModel } from "./order.model";
+import OrderValidationSchema from "./order.validation.schema";
 
 const createAOrderInDB = async (order: Order) => {
   const productId = order.productId;
+  const orderValidate = OrderValidationSchema.parse(order);
   const product = await ProductModel.findById({ _id: productId });
-  const orderData = await OrderModel.create(order);
-  if (product) {
-    // insufficient stock
-    if (orderData.quantity > product.inventory.quantity) {
-      throw new Error("Insufficient quantity available in inventory");
-    }
-
-    // product quantity update
-    product.inventory.quantity -= order.quantity;
-    // update in stock boolean value
-    product.inventory.inStock = product.inventory.quantity > 0;
+  if (!product) {
+    throw new Error("Product Not Found");
   }
+  // insufficient stock
+  if (order.quantity > product.inventory.quantity) {
+    throw new Error("Insufficient quantity available in inventory");
+  }
+  const orderData = await OrderModel.create(orderValidate);
+
+  // product quantity update
+  product.inventory.quantity = product.inventory.quantity - order.quantity;
+  // update in stock boolean value
+  product.inventory.inStock = product.inventory.quantity > 0;
+
+  if (product.inventory.quantity === 0) {
+    product.inventory.inStock = false;
+  }
+  // update product save in the database
+  await product.save();
+  // created order and return it
   return orderData;
 };
 // get all order data
