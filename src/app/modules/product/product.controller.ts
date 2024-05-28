@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ProductServices } from "./product.services";
+import { z } from "zod";
 
 const createProduct = async (req: Request, res: Response) => {
   try {
@@ -11,7 +12,16 @@ const createProduct = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
+    }
   }
 };
 
@@ -35,7 +45,10 @@ const getAllProducts = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      success: true,
+      message: error,
+    });
   }
 };
 const getSingleProducts = async (req: Request, res: Response) => {
@@ -48,7 +61,10 @@ const getSingleProducts = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      success: true,
+      message: error,
+    });
   }
 };
 
@@ -66,7 +82,10 @@ const updateProduct = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      success: true,
+      message: error,
+    });
   }
 };
 
@@ -87,7 +106,10 @@ const deleteProduct = async (req: Request, res: Response) => {
       data: null,
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      success: true,
+      message: error,
+    });
   }
 };
 

@@ -1,9 +1,11 @@
 import { Product } from "./product.interface";
 import { ProductModel } from "./product.model";
+import ProductValidationSchema from "./product.zod.validations";
 
 // create a product functions here
 const createProductInDB = async (product: Product) => {
-  const result = await ProductModel.create(product);
+  const productValidate = ProductValidationSchema.parse(product);
+  const result = await ProductModel.create(productValidate);
   return result;
 };
 
