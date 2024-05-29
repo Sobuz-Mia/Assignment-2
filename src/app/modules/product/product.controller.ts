@@ -29,7 +29,6 @@ const getAllProducts = async (req: Request, res: Response) => {
   try {
     const searchTerm = req.query.searchTerm as string;
     if (searchTerm) {
-      console.log(searchTerm);
       const result = await ProductServices.searchByValue(searchTerm);
       res.status(200).json({
         success: true,
@@ -74,7 +73,7 @@ const updateProduct = async (req: Request, res: Response) => {
     const { productId } = req.params;
     const result = await ProductServices.updateSingleProduct(
       productId,
-      product,
+      product
     );
 
     res.status(200).json({
